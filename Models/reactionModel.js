@@ -8,21 +8,20 @@ const reactionSchema = new mongoose.Schema(
     },
     from: {
       type: mongoose.Schema.ObjectId,
-      ref: User,
+      ref: "User",
       required: [true, "a reaction must be by a user."],
     },
     targetType: {
       type: String,
       enum: {
-        values: ["post", "comment"],
+        values: ["Post", "Comment"],
         message: "a target Type must be either a post or a comment.",
       },
       required: [true, "a reaction to target must have a type."],
     },
     targetId: {
-      // type : mongoose.Schema.ObjectId,
-      // ref : Post || Comment,
-      type: String,
+      type: mongoose.Schema.ObjectId,
+      refPath: targetType,
       required: [true, "a reaction must belong to either post or comment."],
     },
   },
