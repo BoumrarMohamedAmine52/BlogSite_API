@@ -4,7 +4,7 @@ const User = require("./userModel");
 const postSchema = new mongoose.Schema(
   {
     user: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.ObjectId,
       ref: User,
       required: [true, "a post must belong to a user."],
     },
