@@ -31,6 +31,8 @@ const reactionSchema = new mongoose.Schema(
   },
 );
 
+reactionSchema.index({ from: 1, targetId: 1 }, { unique: true });
+
 const Reaction = mongoose.Model("Reaction", reactionSchema);
 
 module.exports = Reaction;
