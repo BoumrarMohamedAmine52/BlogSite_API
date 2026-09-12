@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../Models/userModel");
+const AppError = require("../Utils/appError");
 
 exports.signIn = asyncHandler(async (req, res, next) => {
   const user = await User.create(req.body);
