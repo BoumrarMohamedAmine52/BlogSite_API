@@ -48,3 +48,5 @@ exports.logIn = asyncHandler(async (req, res, next) => {
     },
   });
 });
+
+exports.protect = asyncHandler(async (req, res, next) => {});
