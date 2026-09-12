@@ -3,5 +3,5 @@ const authControllers = require("../Controllers/authControllers");
 
 const Router = express.Router();
 
-Router.post("/signIn", authControllers.signIn);
+Router.post("/signIn", authControllers.signUp);
 Router.post("/logIn", authControllers.logIn);

@@ -9,7 +9,7 @@ const signToken = (id) => {
   });
 };
 
-exports.signIn = asyncHandler(async (req, res, next) => {
+exports.signUp = asyncHandler(async (req, res, next) => {
   const user = await User.create(req.body);
 
   const token = signToken(user.id);

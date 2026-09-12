@@ -9,6 +9,20 @@ app.use(morgan("dev"));
 app.route("/api/v1/blog/users", userRouter);
 
 app.all("*", (req, res) => {
-  res.json(400);
+  res.status(404).json({
+    status: "failed",
+    message: `Could't find URL : ${req.originalUrl}`,
+  });
+});
+
+app.use((err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || "error";
+
+  res.status(err.statusCode).json({
+    status: err.status,
+    error: err,
+    stack: err.stack,
+  });
 });
 module.exports = app;
