@@ -19,7 +19,7 @@ const reactionSchema = new mongoose.Schema(
       },
       required: [true, "a reaction to target must have a type."],
     },
-    targetId: {
+    reactionTarget: {
       type: mongoose.Schema.ObjectId,
       refPath: targetType,
       required: [true, "a reaction must belong to either post or comment."],
@@ -32,6 +32,6 @@ const reactionSchema = new mongoose.Schema(
 
 reactionSchema.index({ from: 1, targetId: 1 }, { unique: true });
 
-const Reaction = mongoose.Model("Reaction", reactionSchema);
+const Reaction = mongoose.model("Reaction", reactionSchema);
 
 module.exports = Reaction;

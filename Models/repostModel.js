@@ -19,6 +19,6 @@ const repostSchema = new mongoose.Schema(
   },
 );
 
-const Repost = mongoose.Model("Repost", repostSchema);
+const Repost = mongoose.model("Repost", repostSchema);
 
 module.exports = Repost;
