@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../Models/userModel");
 const AppError = require("../Utils/appError");
 const jwt = require("jsonwebtoken");
+const { Promisify } = require("utils");
 
 const signToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -49,4 +50,36 @@ exports.logIn = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.protect = asyncHandler(async (req, res, next) => {});
+exports.protect = asyncHandler(async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  if (!token) {
+    return next(
+      new AppError("u are not loged in, please logIn to get access.", 401),
+    );
+  }
+
+  const decode = await Promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  const currentUser = await User.findById(decode.id);
+
+  if (!currentUser) {
+    return next(new AppError("the user belongs to that token no more exists."));
+  }
+
+  if (currentUser.passwordChanged(decode.iat)) {
+    return next(
+      new AppError("the token has been expired, please log in again.", 401),
+    );
+  }
+
+  req.user = currentUser;
+  req.user.id = decode.id;
+  next();
+});

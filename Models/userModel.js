@@ -31,6 +31,9 @@ const userSchema = new mongoose.Schema(
       },
       select: false,
     },
+    passwordChangedDate: {
+      type: Date,
+    },
     birthDate: {
       type: Date,
       required: [true, "please provide ur bith date."],
@@ -67,6 +70,17 @@ userSchema.methods.correctPassword = async function (
   userPassword,
 ) {
   return bcrypt.compare(password, hashedPassword);
+};
+
+userSchema.methods.passwordChanged = function (jwtTimeStmp) {
+  if (this.passwordChangedDate === undefined) return false;
+
+  const passwordChangedDateSTMP = parseInt(
+    this.passwordChangedDate.getTime() / 1000,
+    10,
+  );
+
+  return passwordChangedDateSTMP > jwtTimeStmp;
 };
 
 const User = mongoose.model("User", userSchema);
