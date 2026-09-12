@@ -8,6 +8,9 @@ const repostSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "a reposted post must be by a user."],
     },
+    content: {
+      type: String,
+    },
     originalPost: {
       type: mongoose.Schema.ObjectId,
       ref: "Post",
