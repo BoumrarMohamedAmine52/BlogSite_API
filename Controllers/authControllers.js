@@ -67,7 +67,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   const decode = await Promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  const currentUser = await User.findById(decode.id);
+  const currentUser = await User.findById(decode.id).select("+password");
 
   if (!currentUser) {
     return next(

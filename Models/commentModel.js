@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Reaction = require("./reactionModel");
 
 const commentSchema = new mongoose.Schema(
   {
@@ -30,6 +31,24 @@ const commentSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+// commentSchema.virtual("commentsCount").get(async function () {
+//   const comments = await Comment.find({ parentId: this.id });
+//   return comments.length;
+// });
+
+commentSchema.virtual("likesCount").get(async function () {
+  const likes = await Reaction.find({ reactionTarget: this.id, isLike: true });
+  return likes.length;
+});
+
+postSchema.virtual("disLikesCount").get(async function () {
+  const dislikes = await Reaction.find({
+    reactionTarget: this.id,
+    isLike: false,
+  });
+  return dislikes.length;
+});
 
 const Comment = mongoose.model("Comment", commentSchema);
 

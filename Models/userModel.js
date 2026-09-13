@@ -100,6 +100,12 @@ userSchema.virtual("postsCount").get(async function () {
   return posts.length;
 });
 
+userSchema.virtual("posts", {
+  ref: "Post",
+  foreignField: "user",
+  localField: "_id",
+});
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
