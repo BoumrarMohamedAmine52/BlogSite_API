@@ -1,10 +1,15 @@
 const express = require("express");
 const blockControllers = require("../Controllers/blockControllers");
+const authControllers = require("../Controllers/authControllers");
 
 const Router = express.Router();
 
 Router.get("/", blockControllers.allBlocks);
 
 Router.route("/block/:id")
-  .post(blockControllers.setBlockFields, blockControllers.addBlock)
-  .delete(blockControllers.deleteBlock);
+  .post(
+    authControllers.protect,
+    blockControllers.setBlockFields,
+    blockControllers.addBlock,
+  )
+  .delete(authControllers.protect, blockControllers.deleteBlock);

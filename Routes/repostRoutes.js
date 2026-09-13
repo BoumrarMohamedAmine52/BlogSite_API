@@ -1,17 +1,16 @@
 const express = require("express");
 const repostControllers = require("../Controllers/repostControllers");
+const authControllers = require("../Controllers/authControllers");
 
 const Router = express.Router();
 
 Router.get("/", repostControllers.allREposts);
 
-Router.post(
-  "/repost/:originalPost",
-  repostControllers.setRepostFields,
-  repostControllers.addRepost,
-);
+Router.get("/repost/:id", repostControllers.getRepost);
+
+Router.use(authControllers.protect);
 
 Router.route("repost/:id")
-  .get(repostControllers.getRepost)
+  .post(repostControllers.setRepostFields, repostControllers.addRepost)
   .patch(repostControllers.updateRepost)
   .delete(repostControllers.deleteRepost);

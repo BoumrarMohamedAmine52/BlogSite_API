@@ -1,11 +1,18 @@
 const express = require("express");
 const commentControllers = require("../Controllers/commentControllers");
+const authControllers = require("../Controllers/authControllers");
 
 const Router = express.Router();
 
 Router.get("/", commentControllers.allComments);
 
-Router.get("/comment/:id", commentControllers.getComment);
+Router.get(
+  "/comment/:id",
+  authControllers.protect,
+  commentControllers.getComment,
+);
+
+Router.use(authControllers.protect);
 
 Router.use(commentControllers.setCommentsFields);
 

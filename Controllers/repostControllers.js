@@ -5,7 +5,7 @@ const handlersFactory = require("./handlerFactory");
 
 exports.setRepostFields = (req, res, next) => {
   req.body.repostedBy = req.body.repostedBy || req.user.id;
-  req.body.originalPost = req.body.originalPost || req.params.originalPost;
+  req.body.originalPost = req.body.originalPost || req.params.id;
 
   next();
 };

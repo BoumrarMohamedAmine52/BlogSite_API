@@ -1,9 +1,12 @@
 const express = require("express");
 const reactionControllers = require("../Controllers/reactionControllers");
+const authControllers = require("../Controllers/authControllers");
 
 const Router = express.Router();
 
 Router.get("/", reactionControllers.getAllReaction);
+
+Router.use(authControllers.protect);
 
 Router.use(reactionControllers.setReactionFields);
 
