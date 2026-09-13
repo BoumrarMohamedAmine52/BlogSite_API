@@ -1,0 +1,28 @@
+const asyncHandler = require("express-async-handler");
+const AppError = require("../Utils/appError");
+const Reaction = require("../Models/reactionModel");
+const handlersFactory = require("./handlerFactory");
+
+exports.setReactionFields = (req, res, next) => {
+  if (req.method === "POST") {
+    req.body.isLike =
+      req.body.isLike || req.params.isLike === "like" ? true : false;
+    req.body.from = req.body.from || req.user.id;
+    req.body.targeType = req.body.targetType || req.params.type;
+    req.body.targetId = req.body.targetId || req.params.targetId;
+  } else {
+    req.body = {
+      isLike: req.body.isLike || req.params.isLike === "like" ? true : false,
+    };
+  }
+};
+
+exports.getAllReaction = handlersFactory.getAll(Reaction);
+
+// exports.getReaction = handlersFactory.getOne(Reaction);
+
+exports.addReaction = handlersFactory.addOne(Reaction);
+
+exports.updateReaction = handlersFactory.updateOne(Reaction);
+
+exports.deleteReaction = handlersFactory.deleteOne(Reaction);
