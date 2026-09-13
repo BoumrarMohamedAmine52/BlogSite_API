@@ -69,7 +69,7 @@ userSchema.methods.correctPassword = async function (
   CandidatePassword,
   userPassword,
 ) {
-  return bcrypt.compare(password, hashedPassword);
+  return bcrypt.compare(CandidatePassword, userPassword);
 };
 
 userSchema.methods.passwordChanged = function (jwtTimeStmp) {

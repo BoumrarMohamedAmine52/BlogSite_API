@@ -3,10 +3,13 @@ const morgan = require("morgan");
 
 const app = express();
 
+app.use(express.json());
+
 const userRouter = require("./Routes/userRoutes");
+
 app.use(morgan("dev"));
 
-app.route("/api/v1/blog/users", userRouter);
+app.use("/api/v1/blog/users", userRouter);
 
 app.all("*", (req, res) => {
   res.status(404).json({

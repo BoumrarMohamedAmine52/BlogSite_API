@@ -4,16 +4,14 @@ const Reaction = require("../Models/reactionModel");
 const handlersFactory = require("./handlerFactory");
 
 exports.setReactionFields = (req, res, next) => {
+  req.body = {
+    isLike: req.body.isLike || req.params.isLike === "like" ? true : false,
+  };
+
   if (req.method === "POST") {
-    req.body.isLike =
-      req.body.isLike || req.params.isLike === "like" ? true : false;
     req.body.from = req.body.from || req.user.id;
-    req.body.targeType = req.body.targetType || req.params.type;
-    req.body.targetId = req.body.targetId || req.params.targetId;
-  } else {
-    req.body = {
-      isLike: req.body.isLike || req.params.isLike === "like" ? true : false,
-    };
+    req.body.targetType = req.body.targetType || req.params.type;
+    req.body.reactionTarget = req.body.reactionTarget || req.params.targetId;
   }
   next();
 };

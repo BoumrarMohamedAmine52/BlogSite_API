@@ -13,4 +13,4 @@ exports.allFollows = handlersFactory.getAll(Follow);
 
 exports.addFollow = handlersFactory.addOne(Follow);
 
-exports.deleteFollow = handlersFactory.deleteFollow(Follow);
+exports.deleteFollow = handlersFactory.deleteOne(Follow);

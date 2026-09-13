@@ -69,8 +69,8 @@ exports.updateOne = (Model) => {
   });
 };
 
-exports.deeteOne = (Model) => {
-  return asyncHandler(async (rea, res, next) => {
+exports.deleteOne = (Model) => {
+  return asyncHandler(async (req, res, next) => {
     const deletedDoc = await Model.findByIdAndDelete(req.params.id);
 
     if (!deletedDoc) {

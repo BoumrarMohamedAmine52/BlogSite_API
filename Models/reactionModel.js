@@ -21,7 +21,7 @@ const reactionSchema = new mongoose.Schema(
     },
     reactionTarget: {
       type: mongoose.Schema.ObjectId,
-      refPath: targetType,
+      refPath: "targetType",
       required: [true, "a reaction must belong to either post or comment."],
     },
   },
@@ -30,7 +30,7 @@ const reactionSchema = new mongoose.Schema(
   },
 );
 
-reactionSchema.index({ from: 1, targetId: 1 }, { unique: true });
+reactionSchema.index({ from: 1, reactionTarget: 1 }, { unique: true });
 
 const Reaction = mongoose.model("Reaction", reactionSchema);
 

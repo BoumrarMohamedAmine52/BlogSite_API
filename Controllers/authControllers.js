@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../Models/userModel");
 const AppError = require("../Utils/appError");
 const jwt = require("jsonwebtoken");
-const { Promisify } = require("utils");
+const { Promisify } = require("util");
 
 const signToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -70,7 +70,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
   const currentUser = await User.findById(decode.id);
 
   if (!currentUser) {
-    return next(new AppError("the user belongs to that token no more exists."));
+    return next(
+      new AppError("the user belongs to that token no more exists.", 401),
+    );
   }
 
   if (currentUser.passwordChanged(decode.iat)) {

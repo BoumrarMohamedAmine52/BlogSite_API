@@ -13,4 +13,4 @@ exports.allBlocks = handlersFactory.getAll(Block);
 
 exports.addBlock = handlersFactory.addOne(Block);
 
-exports.deleteBlock = handlersFactory.deeteOne(Block);
+exports.deleteBlock = handlersFactory.deleteOne(Block);
