@@ -15,6 +15,7 @@ exports.setReactionFields = (req, res, next) => {
       isLike: req.body.isLike || req.params.isLike === "like" ? true : false,
     };
   }
+  next();
 };
 
 exports.getAllReaction = handlersFactory.getAll(Reaction);

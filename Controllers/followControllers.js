@@ -6,6 +6,7 @@ const handlersFactory = require("./handlerFactory");
 exports.setFollowFields = (req, res, next) => {
   req.body.follower = req.body.follower || req.user.id;
   req.body.followTarget = req.body.followTarget || req.params.id;
+  next();
 };
 
 exports.allFollows = handlersFactory.getAll(Follow);
