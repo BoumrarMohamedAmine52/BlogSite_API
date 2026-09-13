@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const Follow = require("./followModel");
+const Post = require("./postModel");
 
 const userSchema = new mongoose.Schema(
   {
@@ -82,6 +84,21 @@ userSchema.methods.passwordChanged = function (jwtTimeStmp) {
 
   return passwordChangedDateSTMP > jwtTimeStmp;
 };
+
+userSchema.virtual("followersCount").get(async function () {
+  const follows = await Follow.find({ followTarget: this.id });
+  return follows.length;
+});
+
+userSchema.virtual("followingCount").get(async function () {
+  const followings = await Follow.find({ follower: this.id });
+  return followings.length;
+});
+
+userSchema.virtual("postsCount").get(async function () {
+  const posts = await Post.find({ user: this.id });
+  return posts.length;
+});
 
 const User = mongoose.model("User", userSchema);
 
