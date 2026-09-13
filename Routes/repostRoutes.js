@@ -4,7 +4,7 @@ const authControllers = require("../Controllers/authControllers");
 
 const Router = express.Router();
 
-Router.get("/", repostControllers.allREposts);
+Router.get("/", repostControllers.allReposts);
 
 Router.get("/repost/:id", repostControllers.getRepost);
 
