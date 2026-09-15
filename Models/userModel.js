@@ -102,6 +102,12 @@ userSchema.methods.createResetToken = function () {
   return resetToken;
 };
 
+userSchema.pre("save", function () {
+  if (!this.isModified("password") || this.isNew) return;
+
+  this.passwordChangedDate = Date.now() - 1;
+});
+
 userSchema.virtual("followersCount").get(async function () {
   const follows = await Follow.find({ followTarget: this.id });
   return follows.length;

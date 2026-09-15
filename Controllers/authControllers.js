@@ -145,4 +145,20 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   if (!password || !passwordConfirm) {
     return next(new AppError("please provide ur password", 400));
   }
+
+  const user = await User.findOne({ resetToken: req.params.resetToken });
+
+  user.password = password;
+  user.passwordConfirm = passwordConfirm;
+  user.resetToken = undefined;
+  user.resetTokenExp = undefined;
+
+  await user.save();
+
+  res.status(204).json({
+    status: "Success",
+    data: {
+      user,
+    },
+  });
 });
