@@ -3,6 +3,8 @@ const User = require("../Models/userModel");
 const AppError = require("../Utils/appError");
 const jwt = require("jsonwebtoken");
 const { Promisify } = require("util");
+const crypto = require("crypto");
+const sendEmail = require("../Utils/email");
 
 const signToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -84,4 +86,63 @@ exports.protect = asyncHandler(async (req, res, next) => {
   req.user = currentUser;
   req.user.id = decode.id;
   next();
+});
+
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return next(new AppError("Please provide ur email.", 400));
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return next(
+      new AppError("The user that belong to that email no more exists.", 401),
+    );
+  }
+
+  const resetToken = user.createResetToken();
+
+  const urlResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  const URL = `${req.protocol}://${req.hostname}:${process.env.JWT_PORT}/api/v1/users/resetPassword/${urlResetToken}`;
+
+  const message = `U forgot ur password ? 
+  if yes , please make a patch request to this url ${URL},
+   with the new password and new passwordConfirm. 
+   this url is only available for 10 min from now.`;
+
+  const mailOptions = {
+    email: user.email,
+    subj: "Reset Password",
+    text: message,
+  };
+
+  try {
+    await sendEmail(mailOptions);
+
+    res.status(201).json({
+      status: "Success",
+      message: "email sent successfully",
+    });
+  } catch (error) {
+    user.resetToken = undefined;
+    user.resetTokenExp = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(new AppError("Error sending the email.", 500));
+  }
+});
+
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  const { password, passwordConfirm } = req.body;
+
+  if (!password || !passwordConfirm) {
+    return next(new AppError("please provide ur password", 400));
+  }
 });

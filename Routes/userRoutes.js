@@ -7,7 +7,32 @@ const Router = express.Router();
 Router.post("/signIn", authControllers.signUp);
 Router.post("/logIn", authControllers.logIn);
 
-Router.get("/myProfile", authControllers.protect, userControllers.getMyProfile);
+Router.get(
+  "/myProfile",
+  authControllers.protect,
+  userControllers.setUserId,
+  userControllers.getMyProfile,
+);
 
-Router.get("/profile/:id", authControllers.protect, userControllers.getProfile);
+Router.route("/profile/:id")
+  .get(authControllers.protect, userControllers.getProfile)
+  .patch(
+    authControllers.protect,
+    userControllers.setUpdateUserOptions,
+    userControllers.updateUser,
+  );
+Router.patch(
+  "profile/deactive/:id",
+  authControllers.protect,
+  userControllers.setDeleteOptions,
+  userControllers.deleteUser,
+);
+
+Router.patch(
+  "/profile/updatePassword",
+  authControllers.protect,
+  userControllers.updatePassword,
+);
+
+Router.post("/forgotPassword");
 module.exports = Router;

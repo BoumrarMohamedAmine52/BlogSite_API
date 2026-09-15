@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcrypt");
 const Follow = require("./followModel");
 const Post = require("./postModel");
+const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema(
   {
@@ -54,6 +55,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: "false",
     },
+    restToken: {
+      type: string,
+    },
+    restTokenExp: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -85,6 +92,16 @@ userSchema.methods.passwordChanged = function (jwtTimeStmp) {
   return passwordChangedDateSTMP > jwtTimeStmp;
 };
 
+userSchema.methods.createResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.restToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+  this.restTokenExp = Date.now() + 10 * 60 * 1000 - 1;
+
+  return resetToken;
+};
+
 userSchema.virtual("followersCount").get(async function () {
   const follows = await Follow.find({ followTarget: this.id });
   return follows.length;
@@ -106,6 +123,12 @@ userSchema.virtual("posts", {
   localField: "_id",
 });
 
+userSchema.pre(/^find/, function () {
+  this.populate({
+    path: "posts",
+    select: "-__v -updatedAt",
+  });
+});
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
