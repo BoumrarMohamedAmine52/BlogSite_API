@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const Follow = require("./followModel");
 const Post = require("./postModel");
-const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema(
   {
@@ -55,8 +55,8 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: "false",
     },
-    restToken: {
-      type: string,
+    resetToken: {
+      type: String,
     },
     restTokenExp: {
       type: Date,
@@ -64,6 +64,8 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true }, // Ensures virtuals show up when converted to JSON
+    toObject: { virtuals: true },
   },
 );
 
@@ -108,19 +110,25 @@ userSchema.pre("save", function () {
   this.passwordChangedDate = Date.now() - 1;
 });
 
-userSchema.virtual("followersCount").get(async function () {
-  const follows = await Follow.find({ followTarget: this.id });
-  return follows.length;
+userSchema.virtual("followersCount", {
+  ref: "Follow",
+  foreignField: "followTarget",
+  localField: "_id",
+  count: true,
 });
 
-userSchema.virtual("followingCount").get(async function () {
-  const followings = await Follow.find({ follower: this.id });
-  return followings.length;
+userSchema.virtual("followingCount", {
+  ref: "Follow",
+  foreignField: "follower",
+  localField: "_id",
+  count: true,
 });
 
-userSchema.virtual("postsCount").get(async function () {
-  const posts = await Post.find({ user: this.id });
-  return posts.length;
+userSchema.virtual("postsCount", {
+  ref: "Post",
+  foreignField: "user",
+  localField: "_id",
+  count: true,
 });
 
 userSchema.virtual("posts", {

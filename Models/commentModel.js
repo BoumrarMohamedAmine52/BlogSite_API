@@ -29,25 +29,25 @@ const commentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true }, // Ensures virtuals show up when converted to JSON
+    toObject: { virtuals: true },
   },
 );
 
-// commentSchema.virtual("commentsCount").get(async function () {
-//   const comments = await Comment.find({ parentId: this.id });
-//   return comments.length;
-// });
-
-commentSchema.virtual("likesCount").get(async function () {
-  const likes = await Reaction.find({ reactionTarget: this.id, isLike: true });
-  return likes.length;
+commentSchema.virtual("likesCount", {
+  ref: "Reaction",
+  foreignField: "reactionTarget",
+  localField: "_id",
+  count: true,
+  match: { isLike: true },
 });
 
-postSchema.virtual("disLikesCount").get(async function () {
-  const dislikes = await Reaction.find({
-    reactionTarget: this.id,
-    isLike: false,
-  });
-  return dislikes.length;
+postSchema.virtual("disLikesCount", {
+  ref: "Reaction",
+  foreignField: "reactionTarget",
+  localField: "_id",
+  count: true,
+  match: { isLike: false },
 });
 
 const Comment = mongoose.model("Comment", commentSchema);

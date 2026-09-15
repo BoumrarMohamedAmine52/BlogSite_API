@@ -12,6 +12,7 @@ exports.setDeleteOptions = (req, res, next) => {
   req.body = {
     isActive: false,
   };
+  next();
 };
 
 exports.setUpdateUserOptions = (req, res, next) => {
@@ -33,7 +34,7 @@ exports.deleteUser = handlersFactory.updateOne(User);
 exports.updatePassword = asyncHandler(async (req, res, next) => {
   const { currentPassword, newPassword, newPasswordConfirm } = req.body;
 
-  if (!currentPassword || newPassword || newPasswordConfirm) {
+  if (!currentPassword || !newPassword || !newPasswordConfirm) {
     return next(
       new AppError("please provide ur current and new passwords.", 400),
     );
@@ -41,7 +42,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 
   const user = await User.findById(req.user.id).select("+password");
 
-  if (!(await user.correctPassword(currentPassword, req.user.password))) {
+  if (!(await user.correctPassword(currentPassword, user.password))) {
     return next(new AppError("wrong password", 401));
   }
 

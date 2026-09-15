@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const User = require("./userModel");
-const Comment = require("./commentModel");
 const Reaction = require("./reactionModel");
+const Comment = require("./commentModel");
 const Repost = require("./repostModel");
 
 const postSchema = new mongoose.Schema(
@@ -23,30 +22,39 @@ const postSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true }, // Ensures virtuals show up when converted to JSON
+    toObject: { virtuals: true },
   },
 );
 
-postSchema.virtual("commentsCount").get(async function () {
-  const comments = await Comment.find({ parentId: this.id });
-  return posts.length;
+postSchema.virtual("commentsCount", {
+  ref: "Comment",
+  foreignField: "parentId",
+  localField: "_id",
+  count: true,
 });
 
-postSchema.virtual("likesCount").get(async function () {
-  const likes = await Reaction.find({ reactionTarget: this.id, isLike: true });
-  return likes.length;
+postSchema.virtual("likesCount", {
+  ref: "Reaction",
+  foreignField: "reactionTarget",
+  localField: "_id",
+  count: true,
+  match: { isLike: true },
 });
 
-postSchema.virtual("disLikesCount").get(async function () {
-  const dislikes = await Reaction.find({
-    reactionTarget: this.id,
-    isLike: false,
-  });
-  return dislikes.length;
+postSchema.virtual("disLikesCount", {
+  ref: "Reaction",
+  foreignField: "reactionTarget",
+  localField: "_id",
+  count: true,
+  match: { isLike: false },
 });
 
-postSchema.virtual("repostCount").get(async function () {
-  const reposts = await Repost.find({ originalPost: this.id });
-  return reposts.length;
+postSchema.virtual("repostCount", {
+  ref: "Repost",
+  foreignField: "originalPost",
+  localField: "_id",
+  count: true,
 });
 
 const Post = mongoose.model("Post", postSchema);

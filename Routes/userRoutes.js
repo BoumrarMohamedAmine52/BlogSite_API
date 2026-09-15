@@ -9,7 +9,7 @@ Router.post("/logIn", authControllers.logIn);
 
 Router.post("/forgotPassword", userControllers.forgotPassword);
 
-Router.patch("/resetPassword", userControllers.resetPassword);
+Router.patch("/resetPassword/:resetToken", userControllers.resetPassword);
 
 Router.use(authControllers.protect);
 

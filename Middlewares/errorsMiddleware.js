@@ -1,4 +1,4 @@
-const AppError = require("../Utils/AppError");
+const AppError = require("../Utils/appError");
 
 const validationErrorsHandler = (err) => {
   const msgs = Object.values(err.errors).map((el) => el.message);

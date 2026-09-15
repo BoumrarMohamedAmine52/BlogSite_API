@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../Models/userModel");
 const AppError = require("../Utils/appError");
 const jwt = require("jsonwebtoken");
-const { Promisify } = require("util");
+const { promisify } = require("util");
 const crypto = require("crypto");
 const sendEmail = require("../Utils/email");
 
@@ -67,7 +67,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     );
   }
 
-  const decode = await Promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   const currentUser = await User.findById(decode.id).select("+password");
 
@@ -105,12 +105,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
   const resetToken = user.createResetToken();
 
-  const urlResetToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
-
-  const URL = `${req.protocol}://${req.hostname}:${process.env.JWT_PORT}/api/v1/users/resetPassword/${urlResetToken}`;
+  const URL = `${req.protocol}://${req.hostname}:${process.env.JWT_PORT}/api/v1/users/resetPassword/${resetToken}`;
 
   const message = `U forgot ur password ? 
   if yes , please make a patch request to this url ${URL},
@@ -146,7 +141,24 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     return next(new AppError("please provide ur password", 400));
   }
 
-  const user = await User.findOne({ resetToken: req.params.resetToken });
+  const hashedResetToken = crypto
+    .createHash("sha256")
+    .update(req.params.resetToken)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetToken: hashedResetToken,
+    resetTokenExp: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    user.resetToken = undefined;
+    user.resetTokenExp = undefined;
+
+    await user.save();
+
+    return next(new AppError("ur reset token have been expired.", 401));
+  }
 
   user.password = password;
   user.passwordConfirm = passwordConfirm;
