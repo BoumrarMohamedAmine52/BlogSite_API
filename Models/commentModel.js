@@ -42,7 +42,7 @@ commentSchema.virtual("likesCount", {
   match: { isLike: true },
 });
 
-postSchema.virtual("disLikesCount", {
+commentSchema.virtual("disLikesCount", {
   ref: "Reaction",
   foreignField: "reactionTarget",
   localField: "_id",

@@ -58,7 +58,7 @@ const userSchema = new mongoose.Schema(
     resetToken: {
       type: String,
     },
-    restTokenExp: {
+    resetTokenExp: {
       type: Date,
     },
   },
@@ -97,9 +97,12 @@ userSchema.methods.passwordChanged = function (jwtTimeStmp) {
 userSchema.methods.createResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString("hex");
 
-  this.restToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+  this.resetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
 
-  this.restTokenExp = Date.now() + 10 * 60 * 1000 - 1;
+  this.resetTokenExp = Date.now() + 10 * 60 * 1000 - 1;
 
   return resetToken;
 };

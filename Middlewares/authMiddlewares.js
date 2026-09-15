@@ -152,12 +152,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   });
 
   if (!user) {
-    user.resetToken = undefined;
-    user.resetTokenExp = undefined;
-
-    await user.save();
-
-    return next(new AppError("ur reset token have been expired.", 401));
+    return next(new AppError("Token is invalid or has expired.", 400));
   }
 
   user.password = password;
