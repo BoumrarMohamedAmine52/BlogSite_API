@@ -11,3 +11,5 @@ Router.route("/post/:id")
   .get(postControllers.getPost)
   .patch(authControllers.protect, postControllers.updatePost)
   .delete(authControllers.protect, postControllers.deletePost);
+
+module.exports = Router;

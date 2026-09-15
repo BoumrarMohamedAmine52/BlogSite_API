@@ -21,3 +21,5 @@ Router.post("/comment/:type-:parentId", commentControllers.addComment);
 Router.route("/comment/:id/parent/:type-:parentId")
   .patch(commentControllers.updateComment)
   .delete(commentControllers.deleteComment);
+
+module.exports = Router;

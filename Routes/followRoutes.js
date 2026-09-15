@@ -11,3 +11,5 @@ Router.use(authControllers.protect);
 Router.route("/follow/:id")
   .post(followControllers.setFollowFields, followControllers.addFollow)
   .delete(followControllers.deleteFollow);
+
+module.exports = Router;

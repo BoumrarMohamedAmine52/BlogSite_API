@@ -13,3 +13,5 @@ Router.route("/block/:id")
     blockControllers.addBlock,
   )
   .delete(authControllers.protect, blockControllers.deleteBlock);
+
+module.exports = Router;

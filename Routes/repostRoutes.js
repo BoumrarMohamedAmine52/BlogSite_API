@@ -14,3 +14,5 @@ Router.route("repost/:id")
   .post(repostControllers.setRepostFields, repostControllers.addRepost)
   .patch(repostControllers.updateRepost)
   .delete(repostControllers.deleteRepost);
+
+module.exports = Router;

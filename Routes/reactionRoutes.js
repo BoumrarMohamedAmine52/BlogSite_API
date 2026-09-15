@@ -18,3 +18,5 @@ Router.post(
 Router.route("/reaction/:id/isLike/:isLike")
   .patch(reactionControllers.updateReaction)
   .delete(reactionControllers.deleteReaction);
+
+module.exports = Router;
