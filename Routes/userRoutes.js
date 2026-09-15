@@ -1,5 +1,5 @@
 const express = require("express");
-const authControllers = require("../Controllers/authControllers");
+const authControllers = require("../Middlewares/authMiddlewares");
 const userControllers = require("../Controllers/userControllers");
 
 const Router = express.Router();
@@ -7,32 +7,27 @@ const Router = express.Router();
 Router.post("/signIn", authControllers.signUp);
 Router.post("/logIn", authControllers.logIn);
 
+Router.post("/forgotPassword", userControllers.forgotPassword);
+
+Router.patch("/resetPassword", userControllers.resetPassword);
+
+Router.use(authControllers.protect);
+
 Router.get(
   "/myProfile",
-  authControllers.protect,
   userControllers.setUserId,
   userControllers.getMyProfile,
 );
 
 Router.route("/profile/:id")
-  .get(authControllers.protect, userControllers.getProfile)
-  .patch(
-    authControllers.protect,
-    userControllers.setUpdateUserOptions,
-    userControllers.updateUser,
-  );
+  .get(userControllers.getProfile)
+  .patch(userControllers.setUpdateUserOptions, userControllers.updateUser);
 Router.patch(
   "profile/deactive/:id",
-  authControllers.protect,
   userControllers.setDeleteOptions,
   userControllers.deleteUser,
 );
 
-Router.patch(
-  "/profile/updatePassword",
-  authControllers.protect,
-  userControllers.updatePassword,
-);
+Router.patch("/profile/updatePassword", userControllers.updatePassword);
 
-Router.post("/forgotPassword");
 module.exports = Router;

@@ -5,6 +5,8 @@ const app = express();
 
 app.use(express.json());
 
+const globalErrorHandler = require("./Middlewares/errorsMiddleware");
+
 const userRouter = require("./Routes/userRoutes");
 const postRouter = require("./Routes/postRoutes");
 const commentRouter = require("./Routes/commentRoutes");
@@ -30,15 +32,6 @@ app.all("*", (req, res) => {
   });
 });
 
-app.use((err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
-
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    stack: err.stack,
-  });
-});
+app.use(globalErrorHandler);
 
 module.exports = app;
