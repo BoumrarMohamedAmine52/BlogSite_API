@@ -12,7 +12,7 @@ const signToken = (id) => {
   });
 };
 
-exports.signUp = asyncHandler(async (req, res, next) => {
+exports.signUp = asyncHandler(async (req, res) => {
   const user = await User.create(req.body);
 
   const token = signToken(user.id);
@@ -125,7 +125,8 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
       status: "Success",
       message: "email sent successfully",
     });
-  } catch (error) {
+    // eslint-disable-next-line no-unused-vars
+  } catch (err) {
     user.resetToken = undefined;
     user.resetTokenExp = undefined;
     await user.save({ validateBeforeSave: false });

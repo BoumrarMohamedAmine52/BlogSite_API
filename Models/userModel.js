@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const Follow = require("./followModel");
-const Post = require("./postModel");
 
 const userSchema = new mongoose.Schema(
   {

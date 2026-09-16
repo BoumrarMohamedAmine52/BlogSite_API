@@ -36,7 +36,7 @@ exports.getOne = (Model) => {
 };
 
 exports.addOne = (Model) => {
-  return asyncHandler(async (req, res, next) => {
+  return asyncHandler(async (req, res) => {
     const newDoc = await Model.create(req.body);
 
     res.status(201).json({
