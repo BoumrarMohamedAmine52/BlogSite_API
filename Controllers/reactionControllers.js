@@ -1,5 +1,3 @@
-const asyncHandler = require("express-async-handler");
-const AppError = require("../Utils/appError");
 const Reaction = require("../Models/reactionModel");
 const handlersFactory = require("./handlerFactory");
 
@@ -17,8 +15,6 @@ exports.setReactionFields = (req, res, next) => {
 };
 
 exports.getAllReaction = handlersFactory.getAll(Reaction);
-
-// exports.getReaction = handlersFactory.getOne(Reaction);
 
 exports.addReaction = handlersFactory.addOne(Reaction);
 

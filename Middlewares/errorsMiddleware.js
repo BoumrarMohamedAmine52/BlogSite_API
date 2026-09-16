@@ -20,12 +20,12 @@ const duplicateFieldsErrorHandler = (err) => {
   return new AppError(msg, 400);
 };
 
-const JWTErrorHandler = (err) => {
+const JWTErrorHandler = () => {
   const msg = `Invalid Token, please login again.`;
   return new AppError(msg, 401);
 };
 
-const JWTExpiredErrorHandler = (err) => {
+const JWTExpiredErrorHandler = () => {
   const msg = "Your Token has been expired, please log in.";
   return new AppError(msg, 401);
 };

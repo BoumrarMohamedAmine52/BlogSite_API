@@ -169,3 +169,41 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     },
   });
 });
+
+exports.restrictToOwnerOnly = (Model) => {
+  const ownerFields = {
+    User: "_id",
+    Post: "user",
+    Comment: "user",
+    Repost: "repostedBy",
+    Reaction: "from",
+    Follow: "follower",
+    Block: "blocker",
+  };
+
+  return asyncHandler(async (req, res, next) => {
+    const ownerField = ownerFields[Model.modelName];
+
+    if (!ownerField) {
+      return next(
+        new AppError(`Owner field not configured for ${Model.modelName}`, 500),
+      );
+    }
+
+    const document = await Model.findById(req.params.id);
+
+    if (!document) {
+      return next(new AppError("Document not found.", 404));
+    }
+
+    const ownerId = document[ownerField].toString();
+
+    if (ownerId !== req.user.id.toString()) {
+      return next(
+        new AppError("You do not have permission to perform this action.", 403),
+      );
+    }
+
+    next();
+  });
+};

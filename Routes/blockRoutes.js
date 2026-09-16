@@ -1,6 +1,7 @@
 const express = require("express");
 const blockControllers = require("../Controllers/blockControllers");
-const authControllers = require("../Middlewares/authMiddlewares");
+const authMiddlewares = require("../Middlewares/authMiddlewares");
+const Block = require("../Models/blockModel");
 
 const Router = express.Router();
 
@@ -8,10 +9,14 @@ Router.get("/", blockControllers.allBlocks);
 
 Router.route("/block/:id")
   .post(
-    authControllers.protect,
+    authMiddlewares.protect,
     blockControllers.setBlockFields,
     blockControllers.addBlock,
   )
-  .delete(authControllers.protect, blockControllers.deleteBlock);
+  .delete(
+    authMiddlewares.protect,
+    authMiddlewares.restrictToOwnerOnly(Block),
+    blockControllers.deleteBlock,
+  );
 
 module.exports = Router;

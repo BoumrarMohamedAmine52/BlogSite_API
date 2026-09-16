@@ -1,17 +1,18 @@
 const express = require("express");
-const authControllers = require("../Middlewares/authMiddlewares");
+const authMiddlewares = require("../Middlewares/authMiddlewares");
 const userControllers = require("../Controllers/userControllers");
+const User = require("../Models/userModel");
 
 const Router = express.Router();
 
-Router.post("/signIn", authControllers.signUp);
-Router.post("/logIn", authControllers.logIn);
+Router.post("/signIn", authMiddlewares.signUp);
+Router.post("/logIn", authMiddlewares.logIn);
 
-Router.post("/forgotPassword", authControllers.forgotPassword);
+Router.post("/forgotPassword", authMiddlewares.forgotPassword);
 
-Router.patch("/resetPassword/:resetToken", authControllers.resetPassword);
+Router.patch("/resetPassword/:resetToken", authMiddlewares.resetPassword);
 
-Router.use(authControllers.protect);
+Router.use(authMiddlewares.protect);
 
 Router.get(
   "/myProfile",
@@ -21,10 +22,16 @@ Router.get(
 
 Router.route("/profile/:id")
   .get(userControllers.getProfile)
-  .patch(userControllers.setUpdateUserOptions, userControllers.updateUser);
+  .patch(
+    userControllers.setUpdateUserOptions,
+    authMiddlewares.restrictToOwnerOnly(User),
+    userControllers.updateUser,
+  );
+
 Router.patch(
   "profile/deactive/:id",
   userControllers.setDeleteOptions,
+  authMiddlewares.restrictToOwnerOnly(User),
   userControllers.deleteUser,
 );
 

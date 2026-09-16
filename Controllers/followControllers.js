@@ -1,5 +1,3 @@
-const asyncHandler = require("express-async-handler");
-const AppError = require("../Utils/appError");
 const Follow = require("../Models/followModel");
 const handlersFactory = require("./handlerFactory");
 

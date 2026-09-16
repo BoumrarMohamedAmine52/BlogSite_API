@@ -1,7 +1,10 @@
-const asyncHandler = require("express-async-handler");
-const AppError = require("../Utils/appError");
 const Post = require("../Models/postModel");
 const factoryHandlers = require("./handlerFactory");
+
+exports.setUserId = (req, res, next) => {
+  req.body.user = req.body.user || req.user.id;
+  next();
+};
 
 exports.allPosts = factoryHandlers.getAll(Post);
 
